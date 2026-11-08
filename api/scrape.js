@@ -34,11 +34,17 @@ module.exports = async function handler(req, res) {
 
   try {
     browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: viewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
+  args: [
+    ...chromium.args,
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--single-process',
+    '--no-zygote',
+  ],
+  defaultViewport: viewport,
+  executablePath: await chromium.executablePath(),
+  headless: chromium.headless,
+});
 
     const page = await browser.newPage();
     await page.setUserAgent(ua);
