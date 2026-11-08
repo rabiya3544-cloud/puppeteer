@@ -125,7 +125,12 @@ function setStatus(msg, kind) {
   els.status.className = 'status' + (kind ? ' ' + kind : '');
   els.statusLabel.textContent = msg;
 }
-
+function stripCspMeta(html) {
+  return html.replace(
+    /<meta[^>]*http-equiv=["']?Content-Security-Policy["']?[^>]*>/gi,
+    ''
+  );
+}
 function withBase(html, baseUrl) {
   if (!baseUrl) return html;
   const safeBase = baseUrl.replace(/"/g, '&quot;');
@@ -144,7 +149,7 @@ function renderIframe() {
   iframe.sandbox = 'allow-scripts allow-same-origin';
   iframe.referrerPolicy = 'no-referrer';
   iframe.title = 'Fetched page preview';
-  iframe.srcdoc = withBase(state.html, state.url);
+  iframe.srcdoc = absolutizeAll(withBase(stripCspMeta(state.html), state.url), state.url);
   els.viewerIframe.replaceChildren(iframe);
 }
 
