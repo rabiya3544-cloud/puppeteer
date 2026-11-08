@@ -4,7 +4,7 @@ const path = require('path');
 const puppeteer = require('puppeteer-core');
 
 const PORT   = process.env.PORT || 3000;
-const CHROME = process.env.CHROME_PATH || '/usr/bin/google-chrome-stable';
+const CHROME = process.env.CHROME_PATH || '/usr/bin/chromium';
 
 // Chrome on 512 MB can't run multiple pages — serialize requests
 let active = 0;
