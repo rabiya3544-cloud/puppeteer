@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     libexpat1 \
     libfontconfig1 \
     libgbm1 \
-    libgcc1 \
+    libgcc-s1 \
     libglib2.0-0 \
     libgtk-3-0 \
     libnspr4 \
@@ -38,16 +38,17 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
-# Install a real Chrome — no @sparticuz tricks needed
 RUN wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-  && dpkg -i /tmp/chrome.deb || apt-get install -f -y \
+  && dpkg -i /tmp/chrome.deb \
   && rm /tmp/chrome.deb
 
 WORKDIR /app
-COPY package.json package-lock.json* ./
+COPY package.json ./
 RUN npm install --omit=dev
 
 COPY . .
 
+ENV NODE_ENV=production
+ENV CHROME_PATH=/usr/bin/google-chrome-stable
 EXPOSE 3000
 CMD ["node", "server.js"]
